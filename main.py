@@ -40,9 +40,9 @@ kpp.sort_values(by='checkpoint_time', inplace=True)
 for df_name, df_group in kpp.groupby('tracking_number'):
     # Go over indexes in the group
     # enumerate creates new indexes for the list 1 -> len()
-    for idx, df_index in enumerate(df_group.index[1:]):
-        if idx < len(df_group.index):
+    for idx, df_index in enumerate(df_group.index):
+        if 0 < idx < len(df_group.index):
             # Get the next index from the group indexes and calculate the GAP
             kpp.loc[df_index, 'time_gap'] = (kpp.at[df_group.index[idx], 'checkpoint_time'] - kpp.at[df_group.index[idx-1], 'checkpoint_time']).total_seconds() / 60.0
-kpp.to_csv('list.csv', index=False, encoding='utf-8')
-
+        else:
+            kpp.loc[df_index, 'time_gap'] = 0
